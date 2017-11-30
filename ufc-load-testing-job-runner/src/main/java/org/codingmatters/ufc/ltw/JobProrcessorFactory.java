@@ -1,7 +1,7 @@
 package org.codingmatters.ufc.ltw;
 
-import org.codingmatters.poom.runner.JobProcessingException;
 import org.codingmatters.poom.runner.JobProcessor;
+import org.codingmatters.poom.runner.exception.JobProcessingException;
 import org.codingmatters.poomjobs.api.types.Job;
 
 public class JobProrcessorFactory implements JobProcessor.Factory {
