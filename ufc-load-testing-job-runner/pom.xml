@@ -8,6 +8,7 @@
         <groupId>org.codingmatters.ufc</groupId>
         <artifactId>ufc-load-testing</artifactId>
         <version>2017-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <artifactId>ufc-load-testing-job-runner</artifactId>
@@ -18,6 +19,14 @@
         <dependency>
             <groupId>org.codingmatters.poom</groupId>
             <artifactId>poomjobs-runner</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codingmatters.ufc</groupId>
+            <artifactId>ufc-load-testing-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codingmatters.rest</groupId>
+            <artifactId>cdm-rest-client-okhttp</artifactId>
         </dependency>
     </dependencies>
 

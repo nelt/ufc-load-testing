@@ -8,10 +8,39 @@
         <groupId>org.codingmatters.ufc</groupId>
         <artifactId>ufc-load-testing</artifactId>
         <version>2017-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <artifactId>ufc-load-testing-job-service</artifactId>
 
     <name>${project.groupId}:${project.artifactId}</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codingmatters.rest</groupId>
+            <artifactId>cdm-rest-undertow</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codingmatters.poom</groupId>
+            <artifactId>poomjobs-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codingmatters.poom</groupId>
+            <artifactId>poomjobs-clients</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codingmatters.poom</groupId>
+            <artifactId>poomjobs-runner-manager</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codingmatters.ufc</groupId>
+            <artifactId>ufc-load-testing-utils</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
