@@ -1,0 +1,18 @@
+page:
+  title: string
+  jobs:
+    $list:
+      $value-object: org.codingmatters.poomjobs.api.types.Job
+  paging:
+    currentPage: long
+    pageCount: long
+    jobCount: long
+    pageSize: long
+    nextPage: long
+    prevPage: long
+  filter:
+    value: string
+    all: bool
+    pending: bool
+    running: bool
+    done: bool

@@ -1,0 +1,26 @@
+{{#filter}}
+    {{#all}}
+        <button type="button" class="btn btn-primary btn-lg">All jobs</button>
+        <a href="?filter=pending" class="btn btn-secondary btn-lg">Pending jobs</a>
+        <a href="?filter=running" class="btn btn-secondary btn-lg">Running jobs</a>
+        <a href="?filter=done" class="btn btn-secondary btn-lg">Done jobs</a>
+    {{/all}}
+    {{#pending}}
+        <a href="?filter=all" class="btn btn-secondary btn-lg">All jobs</a>
+        <button type="button" class="btn btn-primary btn-lg">Pending jobs</button>
+        <a href="?filter=running" class="btn btn-secondary btn-lg">Running jobs</a>
+        <a href="?filter=done" class="btn btn-secondary btn-lg">Done jobs</a>
+    {{/pending}}
+    {{#running}}
+        <a href="?filter=all" class="btn btn-secondary btn-lg">All jobs</a>
+        <a href="?filter=pending" class="btn btn-secondary btn-lg">Pending jobs</a>
+        <button type="button" class="btn btn-primary btn-lg">Running jobs</button>
+        <a href="?filter=done" class="btn btn-secondary btn-lg">Done jobs</a>
+    {{/running}}
+    {{#done}}
+        <a href="?filter=all" class="btn btn-secondary btn-lg">All jobs</a>
+        <a href="?filter=pending" class="btn btn-secondary btn-lg">Pending jobs</a>
+        <a href="?filter=running" class="btn btn-secondary btn-lg">Running jobs</a>
+        <button type="button" class="btn btn-primary btn-lg">Done jobs</button>
+    {{/done}}
+{{/filter}}
