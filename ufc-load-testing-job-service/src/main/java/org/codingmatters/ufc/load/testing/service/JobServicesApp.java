@@ -3,6 +3,7 @@ package org.codingmatters.ufc.load.testing.service;
 import com.fasterxml.jackson.core.JsonFactory;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
+import org.codingmatters.poom.client.PoomjobsJobRegistryAPIHandlersClient;
 import org.codingmatters.poom.client.PoomjobsRunnerRegistryAPIHandlersClient;
 import org.codingmatters.poom.poomjobs.domain.jobs.repositories.JobRepository;
 import org.codingmatters.poom.poomjobs.domain.runners.repositories.RunnerRepository;
@@ -17,6 +18,7 @@ import org.codingmatters.poomjobs.service.PoomjobsRunnerRegistryAPI;
 import org.codingmatters.poomjobs.service.api.PoomjobsJobRegistryAPIProcessor;
 import org.codingmatters.poomjobs.service.api.PoomjobsRunnerRegistryAPIProcessor;
 import org.codingmatters.rest.undertow.CdmHttpUndertowHandler;
+import org.codingmatters.ufc.load.testing.service.ui.UIHandler;
 import org.codingmatters.ufc.utils.Arguments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +51,7 @@ public class JobServicesApp {
     private final Repository<RunnerValue, RunnerQuery> runnerRepository = RunnerRepository.createInMemory();
     private final PoomjobsRunnerRegistryAPI runnerRegistryAPI;
 
-    private final ExecutorService runnerRegistryClientPool = Executors.newFixedThreadPool(5);
+    private final ExecutorService registryClientPool = Executors.newFixedThreadPool(10);
 
     private final Undertow server;
 
@@ -73,13 +75,15 @@ public class JobServicesApp {
 
         PoomjobsRunnerRegistryAPIHandlersClient runnerRegistryClient = new PoomjobsRunnerRegistryAPIHandlersClient(
                 this.runnerRegistryAPI.handlers(),
-                this.runnerRegistryClientPool
+                this.registryClientPool
         );
 
         this.jobRegistryAPI = new PoomjobsJobRegistryAPI(
                 this.jobRepository,
                 new RunnerInvokerListener(runnerRegistryClient)
         );
+
+        PoomjobsJobRegistryAPIHandlersClient jobRegistryClient = new PoomjobsJobRegistryAPIHandlersClient(this.jobRegistryAPI.handlers(), this.registryClientPool);
 
         this.server = Undertow.builder()
                 .addHttpListener(this.port, this.host)
@@ -94,6 +98,7 @@ public class JobServicesApp {
                                 this.factory,
                                 this.runnerRegistryAPI.handlers()
                         )))
+                        .addPrefixPath("/ui", new UIHandler(jobRegistryClient))
                 )
                 .build();
     }
@@ -124,14 +129,14 @@ public class JobServicesApp {
 
         this.server.stop();
 
-        this.runnerRegistryClientPool.shutdown();
+        this.registryClientPool.shutdown();
         try {
-            this.runnerRegistryClientPool.awaitTermination(5, TimeUnit.SECONDS);
+            this.registryClientPool.awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {}
-        if(! this.runnerRegistryClientPool.isTerminated()) {
-            this.runnerRegistryClientPool.shutdownNow();
+        if(! this.registryClientPool.isTerminated()) {
+            this.registryClientPool.shutdownNow();
             try {
-                this.runnerRegistryClientPool.awaitTermination(5, TimeUnit.SECONDS);
+                this.registryClientPool.awaitTermination(5, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 throw new RuntimeException("cannot stop runner registry pool properly", e);
             }

@@ -42,7 +42,19 @@ public class JobProcessorFactory implements JobProcessor.Factory {
 
         @Override
         public Job process() throws JobProcessingException {
-            long runningTime = ThreadLocalRandom.current().nextLong(minTimeRunning, maxTimeRunning);
+            long maxTime = JobProcessorFactory.this.maxTimeRunning;
+            switch (this.job.opt().arguments().get(0).orElse("normal")) {
+                case "short":
+                    maxTime = maxTime / 3;
+                    break;
+                case "long":
+                    break;
+                default:
+                    maxTime = maxTime * 2 / 3;
+                    break;
+            }
+
+            long runningTime = ThreadLocalRandom.current().nextLong(minTimeRunning, maxTime);
             long startTime = System.currentTimeMillis();
 
             while(System.currentTimeMillis() - startTime < runningTime) {
