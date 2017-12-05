@@ -1,8 +1,12 @@
-<form method="get">
-    <input type="hidden" name="create" value="Job">
-    <input type="hidden" name="filter" value="{{#filter}}{{value}}{{/filter}}">
-    <input type="hidden" name="page" value="{{#paging}}{{currentPage}}{{/paging}}paging}}">
-    <button class="btn btn-success" type="submit" name="argument" value="short">Create Short Job</button>
-    <button class="btn btn-info" type="submit" name="argument" value="normal">Create Normal Job</button>
-    <button class="btn btn-primary" type="submit" name="argument" value="long">Create Long Job</button>
-</form>
+
+<div class="dropdown-menu" aria-labelledby="dropdown01">
+    <form method="get">
+        <input type="hidden" name="create" value="Job">
+        <input type="hidden" name="filter" value="{{#filter}}{{value}}{{/filter}}">
+        <input type="hidden" name="page" value="{{#paging}}{{currentPage}}{{/paging}}">
+
+        <button class="dropdown-item" type="submit" name="argument" value="short">Short Job</button>
+        <button class="dropdown-item" type="submit" name="argument" value="normal">Normal Job</button>
+        <button class="dropdown-item" type="submit" name="argument" value="long">Long Job</button>
+    </form>
+</div>

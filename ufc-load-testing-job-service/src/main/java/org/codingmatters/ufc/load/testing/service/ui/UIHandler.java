@@ -13,6 +13,7 @@ import org.codingmatters.poomjobs.api.types.Job;
 import org.codingmatters.ufc.load.testing.service.ui.utils.PagingProcessor;
 import org.codingmatters.ufc.load.testing.service.ui.view.Page;
 import org.codingmatters.ufc.load.testing.service.ui.view.page.Filter;
+import org.codingmatters.ufc.load.testing.service.ui.view.page.Info;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,10 +42,12 @@ public class UIHandler implements HttpHandler {
         }
         exchange.startBlocking();
 
+        Info.Builder info = null;
+
         String create = exchange.getQueryParameters().getOrDefault("create", new LinkedList<>(Arrays.asList("None"))).getFirst();
         log.info("create ? {}", create);
         if("Job".equals(create)) {
-            this.createJob(exchange);
+            info = this.createJob(exchange);
         }
 
         long page;
@@ -84,17 +87,22 @@ public class UIHandler implements HttpHandler {
                         .jobs(list.toArray(new Job[list.size()]))
                         .paging(new PagingProcessor(this.pageSize, contentRange).paging())
                         .filter(this.from(filter))
+                        .info(info != null ? info.build() : null)
                         .build()
         ).flush();
     }
 
-    private void createJob(HttpServerExchange exchange) throws IOException {
+    private Info.Builder createJob(HttpServerExchange exchange) throws IOException {
         Collection<String> args = exchange.getQueryParameters().getOrDefault("argument", new LinkedList<>());
         JobCollectionPostResponse response = this.jobRegistryAPI.jobCollection().post(req -> req
                 .accountId("from-ui")
                 .payload(payload -> payload.category("TEST").name("TEST").arguments(args))
         );
         log.info("job creation response : {}", response);
+        return Info.builder().level(Info.Level.success).message(
+                String.format("created %s job", args.iterator().next())
+        );
+
     }
 
     private Filter from(String filter) {

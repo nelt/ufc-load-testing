@@ -1,5 +1,20 @@
-<ul>
-    <li>id: {{id}}</li>
-    <li>name: {{name}}</li>
-    <li>argument: {{arguments}}</li>
-</ul>
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Job {{name}} {{arguments}}{{#processing}}{{#submitted}} started at: {{submitted}}{{/submitted}}{{/processing}}</h4>
+        {{#status}}
+            <ul>
+                {{#run}}<li>run status: {{run}}</li>{{/run}}
+                {{#exit}}<li>exit status: {{exit}}</li>{{/exit}}
+            </ul>
+        {{/status}}
+        {{#processing}}
+            <div class="card-footer">
+                <ul class="list-group">
+                {{#submitted}}<li class="list-group-item"><small class="text-muted">submitted at: {{submitted}}</small></li>{{/submitted}}
+                {{#started}}<li class="list-group-item"><small class="text-muted">started at: {{started}}</small></li>{{/started}}
+                {{#finished}}<li class="list-group-item"><small class="text-muted">finished at: {{finished}}</small></li>{{/finished}}
+                </ul>
+            </div>
+        {{/processing}}
+    </div>
+</div>

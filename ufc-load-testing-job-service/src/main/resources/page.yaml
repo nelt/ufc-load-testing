@@ -16,3 +16,7 @@ page:
     pending: bool
     running: bool
     done: bool
+  info:
+    message: string
+    level:
+      $enum: success, danger, warning, info
