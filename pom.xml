@@ -16,6 +16,7 @@
         <module>ufc-load-testing-job-service</module>
         <module>ufc-load-testing-job-runner</module>
         <module>ufc-load-testing-utils</module>
+        <module>ufc-load-testing-delivery</module>
     </modules>
 
     <licenses>

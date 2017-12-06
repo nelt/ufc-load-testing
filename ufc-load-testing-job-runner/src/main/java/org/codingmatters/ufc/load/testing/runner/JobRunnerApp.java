@@ -19,12 +19,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class UFCLoadTestingRunnerApp {
-    static private final Logger log = LoggerFactory.getLogger(UFCLoadTestingRunnerApp.class);
+public class JobRunnerApp {
+    static private final Logger log = LoggerFactory.getLogger(JobRunnerApp.class);
 
     public static void main(String[] args) {
         try {
-            new UFCLoadTestingRunnerApp(args).run();
+            new JobRunnerApp(args).run();
             System.exit(0);
         } catch(RuntimeException e) {
             log.error("error while running runner", e);
@@ -40,8 +40,9 @@ public class UFCLoadTestingRunnerApp {
     private final RequesterFactory requesterFactory;
     private final OkHttpClient client;
 
-    private UFCLoadTestingRunnerApp(String [] args) {
+    private JobRunnerApp(String [] args) {
         Arguments arguments = Arguments.parse(args);
+        log.info("runner started with arguments : {}", arguments);
 
         this.checkArguments(arguments);
 
@@ -51,22 +52,22 @@ public class UFCLoadTestingRunnerApp {
         this.jobRegistryApi = new PoomjobsJobRegistryAPIRequesterClient(
                 this.requesterFactory,
                 this.jsonFactory,
-                arguments.option("--registry")
+                arguments.option("registry")
         );
         this.runnerRegistryApi = new PoomjobsRunnerRegistryAPIRequesterClient(
                 this.requesterFactory,
                 this.jsonFactory,
-                arguments.option("--registry")
+                arguments.option("registry")
         );
         this.jobWorker = Executors.newFixedThreadPool(1);
 
         this.genericRunner = new GenericRunner(
                 RunnerConfiguration.builder()
-                        .jobRegistryUrl(arguments.option("--registry"))
-                        .endpointHost(arguments.option("--host"))
-                        .endpointPort(Integer.parseInt(arguments.option("--port")))
+                        .jobRegistryUrl(arguments.option("registry"))
+                        .endpointHost(arguments.option("host"))
+                        .endpointPort(Integer.parseInt(arguments.option("port")))
 
-                        .callbackBaseUrl(null)
+                        .callbackBaseUrl(String.format("http://%s:%s", arguments.option("host"), arguments.option("port")))
                         .ttl(2000L)
                         .processorFactory(new JobProcessorFactory(
                                 arguments.hasOption("min-process-time") ? Long.parseLong(arguments.option("min-process-time")) : 5 * 1000L,

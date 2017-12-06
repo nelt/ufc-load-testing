@@ -2,28 +2,28 @@
 <nav class="nav nav-pills nav-fill">
     {{#filter}}
         {{#all}}
-            <a class="nav-item nav-link active">All jobs</a>
+            <a href="?filter=all" class="nav-item nav-link active">All jobs</a>
             <a href="?filter=pending" class="nav-item nav-link">Pending jobs</a>
             <a href="?filter=running" class="nav-item nav-link">Running jobs</a>
             <a href="?filter=done" class="nav-item nav-link">Done jobs</a>
         {{/all}}
         {{#pending}}
             <a href="?filter=all" class="nav-item nav-link">All jobs</a>
-            <a class="nav-item nav-link active">Pending jobs</a>
+            <a href="?filter=pending" class="nav-item nav-link active">Pending jobs</a>
             <a href="?filter=running" class="nav-item nav-link">Running jobs</a>
             <a href="?filter=done" class="nav-item nav-link">Done jobs</a>
         {{/pending}}
         {{#running}}
             <a href="?filter=all" class="nav-item nav-link">All jobs</a>
             <a href="?filter=pending" class="nav-item nav-link">Pending jobs</a>
-            <a class="nav-item nav-link active">Running jobs</a>
+            <a href="?filter=running" class="nav-item nav-link active">Running jobs</a>
             <a href="?filter=done" class="nav-item nav-link">Done jobs</a>
         {{/running}}
         {{#done}}
             <a href="?filter=all" class="nav-item nav-link">All jobs</a>
             <a href="?filter=pending" class="nav-item nav-link">Pending jobs</a>
             <a href="?filter=running" class="nav-item nav-link">Running jobs</a>
-            <a class="nav-item nav-link active">Done jobs</a>
+            <a href="?filter=done" class="nav-item nav-link active">Done jobs</a>
         {{/done}}
     {{/filter}}
 </nav>

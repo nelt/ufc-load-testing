@@ -60,10 +60,10 @@ public class UIHandler implements HttpHandler {
         long start = (page - 1) * this.pageSize;
         long end = page * this.pageSize;
 
-        String filter = exchange.getQueryParameters().getOrDefault("filter", new LinkedList<>(Arrays.asList("all"))).getFirst();
+        String filter = exchange.getQueryParameters().getOrDefault("filter", new LinkedList<>(Arrays.asList("pending"))).getFirst();
         if(! Arrays.asList("all", "pending", "running", "done").contains(filter.toLowerCase())) {
             log.error("unknown filter : {}", filter);
-            filter = "all";
+            filter = "pending";
         }
 
         String status = filter.equals("all") ? null : filter.toUpperCase();
@@ -94,6 +94,7 @@ public class UIHandler implements HttpHandler {
 
     private Info.Builder createJob(HttpServerExchange exchange) throws IOException {
         Collection<String> args = exchange.getQueryParameters().getOrDefault("argument", new LinkedList<>());
+        log.info("job creation request for {} job", args.iterator().next());
         JobCollectionPostResponse response = this.jobRegistryAPI.jobCollection().post(req -> req
                 .accountId("from-ui")
                 .payload(payload -> payload.category("TEST").name("TEST").arguments(args))

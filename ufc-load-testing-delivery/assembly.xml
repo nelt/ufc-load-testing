@@ -20,7 +20,8 @@
         <dependencySet>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <include>${project.groupId}:${project.artifactId}</include>
+                <include>${project.groupId}:ufc-load-testing-job-service</include>
+                <include>${project.groupId}:ufc-load-testing-job-runner</include>
             </includes>
             <useProjectArtifact>true</useProjectArtifact>
             <useTransitiveDependencies>false</useTransitiveDependencies>

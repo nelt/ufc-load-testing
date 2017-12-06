@@ -1,7 +1,7 @@
 <configuration>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${runner-name}-runner.log</file>
+        <file>${log-dir}/services.log</file>
         <append>false</append>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [request-id=%X{request-id} entity-id=%X{entity-id} error-token=%X{error-token}] - %msg%n</pattern>
@@ -18,5 +18,11 @@
 
     <root level="debug">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
     </root>
+
+    <logger name="org.codingmatters.poomjobs.service.handlers.RunnerPatchHandler" level="WARN"/>
+    <logger name="org.codingmatters.rest.undertow.UndertowRequestDelegate" level="INFO"/>
+    <logger name="io.undertow.request" level="INFO"/>
+
 </configuration>

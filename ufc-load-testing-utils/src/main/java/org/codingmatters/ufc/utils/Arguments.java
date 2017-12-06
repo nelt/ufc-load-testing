@@ -72,4 +72,12 @@ public class Arguments {
     public String option(String option) {
         return this.options.get(option);
     }
+
+    @Override
+    public String toString() {
+        return "Arguments{" +
+                "arguments=" + Arrays.toString(arguments) +
+                ", options=" + options +
+                '}';
+    }
 }
