@@ -86,6 +86,8 @@ public class JobServicesApp {
         PoomjobsJobRegistryAPIHandlersClient jobRegistryClient = new PoomjobsJobRegistryAPIHandlersClient(this.jobRegistryAPI.handlers(), this.registryClientPool);
 
         this.server = Undertow.builder()
+                .setIoThreads(10)
+                .setWorkerThreads(100)
                 .addHttpListener(this.port, this.host)
                 .setHandler(Handlers.path()
                         .addPrefixPath("/jobs", new CdmHttpUndertowHandler(new PoomjobsJobRegistryAPIProcessor(

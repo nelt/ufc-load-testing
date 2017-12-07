@@ -40,7 +40,6 @@ public class UIHandler implements HttpHandler {
             exchange.dispatch(this);
             return;
         }
-        exchange.startBlocking();
 
         Info.Builder info = null;
 
@@ -79,6 +78,7 @@ public class UIHandler implements HttpHandler {
         String contentRange = collection.status200().contentRange().orElse(collection.status206().contentRange().orElse("0-0/0"));
 
 
+        exchange.startBlocking();
         Mustache mustache = this.mf.compile("templates/main.mustache");
         mustache.execute(
                 new PrintWriter(exchange.getOutputStream()),
