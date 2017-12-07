@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class JobServicesApp {
     static private final Logger log = LoggerFactory.getLogger(JobServicesApp.class);
@@ -51,7 +52,7 @@ public class JobServicesApp {
     private final Repository<RunnerValue, RunnerQuery> runnerRepository = RunnerRepository.createInMemory();
     private final PoomjobsRunnerRegistryAPI runnerRegistryAPI;
 
-    private final ExecutorService registryClientPool = Executors.newFixedThreadPool(10);
+    private final ExecutorService registryClientPool;
 
     private final Undertow server;
 
@@ -63,6 +64,15 @@ public class JobServicesApp {
         if(!arguments.hasOption("port")) {
             throw new RuntimeException("need to specify a --host option");
         }
+
+        int clientPoolSize = 5;
+        if(arguments.hasOption("client-pool-size")) {
+            clientPoolSize = Integer.parseInt(arguments.option("client-pool-size"));
+        }
+
+        AtomicInteger threadIndex = new AtomicInteger(1);
+        this.registryClientPool = Executors.newFixedThreadPool(clientPoolSize, runnable -> new Thread(runnable, "client-pool-thread-" + threadIndex.getAndIncrement()));
+        log.info("starting with client pool size : {}", clientPoolSize);
 
         try {
             this.port = Integer.parseInt(arguments.option("port"));
@@ -86,8 +96,6 @@ public class JobServicesApp {
         PoomjobsJobRegistryAPIHandlersClient jobRegistryClient = new PoomjobsJobRegistryAPIHandlersClient(this.jobRegistryAPI.handlers(), this.registryClientPool);
 
         this.server = Undertow.builder()
-                .setIoThreads(10)
-                .setWorkerThreads(100)
                 .addHttpListener(this.port, this.host)
                 .setHandler(Handlers.path()
                         .addPrefixPath("/jobs", new CdmHttpUndertowHandler(new PoomjobsJobRegistryAPIProcessor(
