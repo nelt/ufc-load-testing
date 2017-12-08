@@ -53,8 +53,12 @@ public class JobProcessorFactory implements JobProcessor.Factory {
                     maxTime = maxTime * 2 / 3;
                     break;
             }
+            if(maxTime <= minTimeRunning) {
+                maxTime = minTimeRunning;
+            }
 
             long runningTime = ThreadLocalRandom.current().nextLong(minTimeRunning, maxTime);
+            log.info("run time : {} (random between {} and {})", runningTime, minTimeRunning, maxTime);
             long startTime = System.currentTimeMillis();
 
             while(System.currentTimeMillis() - startTime < runningTime) {

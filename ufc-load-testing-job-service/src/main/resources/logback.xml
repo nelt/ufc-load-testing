@@ -16,13 +16,23 @@
         </encoder>
     </appender>
 
-    <root level="debug">
+    <appender name="UNDERTOW-FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${log-dir}/services-undertow.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
 
     <logger name="org.codingmatters.poomjobs.service.handlers.RunnerPatchHandler" level="WARN"/>
     <logger name="org.codingmatters.rest.undertow.UndertowRequestDelegate" level="INFO"/>
-    <!--logger name="io.undertow.request" level="INFO"/-->
 
+    <logger name="io.undertow.request" level="DEBUG" additivity="false">
+        <appender-ref ref="UNDERTOW-FILE"/>
+    </logger>
 </configuration>

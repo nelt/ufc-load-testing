@@ -15,6 +15,9 @@ import org.codingmatters.ufc.utils.Arguments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +35,8 @@ public class JobRunnerApp {
         }
     }
 
-    private final GenericRunner genericRunner;
+    private final LinkedList<GenericRunner> runners = new LinkedList<>();
+
     private final PoomjobsJobRegistryAPIClient jobRegistryApi;
     private final PoomjobsRunnerRegistryAPIClient runnerRegistryApi;
     private final ExecutorService jobWorker;
@@ -59,29 +63,52 @@ public class JobRunnerApp {
                 this.jsonFactory,
                 arguments.option("registry")
         );
-        this.jobWorker = Executors.newFixedThreadPool(1);
 
-        this.genericRunner = new GenericRunner(
-                RunnerConfiguration.builder()
-                        .jobRegistryUrl(arguments.option("registry"))
-                        .endpointHost(arguments.option("host"))
-                        .endpointPort(Integer.parseInt(arguments.option("port")))
+        int runnerCount = 1;
+        if(arguments.hasOption("runner-count")) {
+            runnerCount = Integer.parseInt(arguments.option("runner-count"));
+        }
+        this.jobWorker = Executors.newFixedThreadPool(runnerCount * 2);
 
-                        .callbackBaseUrl(String.format("http://%s:%s", arguments.option("host"), arguments.option("port")))
-                        .ttl(2000L)
-                        .processorFactory(new JobProcessorFactory(
-                                arguments.hasOption("min-process-time") ? Long.parseLong(arguments.option("min-process-time")) : 5 * 1000L,
-                                arguments.hasOption("max-process-time") ? Long.parseLong(arguments.option("max-process-time")) : 30 * 1000L
-                        ))
-                        .jobCategory("TEST")
-                        .jobName("TEST")
+        int portBase = Integer.parseInt(arguments.option("port-base"));
+        int port = portBase;
 
-                        .jobRegistryAPIClient(this.jobRegistryApi)
-                        .runnerRegistryAPIClient(this.runnerRegistryApi)
-                        .jobWorker(this.jobWorker)
+        for(int i = 0 ; i < runnerCount ; i++) {
 
-                        .build()
-        );
+            while(true) {
+                try (ServerSocket socket = new ServerSocket(port)) {
+                    port = socket.getLocalPort();
+                    break;
+                } catch (IOException e) {
+                    port++;
+                }
+            }
+
+            log.info("creating runner configuration for port {}", port);
+            this.runners.add(new GenericRunner(
+                    RunnerConfiguration.builder()
+                            .jobRegistryUrl(arguments.option("registry"))
+                            .endpointHost(arguments.option("host"))
+                            .endpointPort(port)
+
+                            .callbackBaseUrl(String.format("http://%s:%s", arguments.option("host"), port))
+                            .ttl(2000L)
+                            .processorFactory(new JobProcessorFactory(
+                                    arguments.hasOption("min-process-time") ? Long.parseLong(arguments.option("min-process-time")) : 5 * 1000L,
+                                    arguments.hasOption("max-process-time") ? Long.parseLong(arguments.option("max-process-time")) : 30 * 1000L
+                            ))
+                            .jobCategory("TEST")
+                            .jobName("TEST")
+
+                            .jobRegistryAPIClient(this.jobRegistryApi)
+                            .runnerRegistryAPIClient(this.runnerRegistryApi)
+                            .jobWorker(this.jobWorker)
+
+                            .build()
+            ));
+
+            port++;
+        }
     }
 
     private void checkArguments(Arguments arguments) throws RuntimeException {
@@ -98,12 +125,14 @@ public class JobRunnerApp {
     }
 
     private void start() {
-        try {
-            this.genericRunner.start();
-        } catch (RunnerInitializationException e) {
-            throw new RuntimeException("error starting generic runner", e);
+        for (GenericRunner runner : this.runners) {
+            try {
+                runner.start();
+            } catch (RunnerInitializationException e) {
+                throw new RuntimeException("error starting runner", e);
+            }
+            log.info("generic runner starting, with id {}", runner.id());
         }
-        log.info("generic runner starting, with id {}", this.genericRunner.id());
     }
 
     private void mainLoop() {
@@ -117,7 +146,9 @@ public class JobRunnerApp {
     }
 
     private void tearDown() {
-        this.genericRunner.stop();
+        for (GenericRunner runner : this.runners) {
+            runner.stop();
+        }
         this.jobWorker.shutdown();
         try {
             this.jobWorker.awaitTermination(20, TimeUnit.SECONDS);
