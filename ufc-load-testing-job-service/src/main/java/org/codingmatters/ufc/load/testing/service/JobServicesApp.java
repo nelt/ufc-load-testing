@@ -1,5 +1,7 @@
 package org.codingmatters.ufc.load.testing.service;
 
+import com.codahale.metrics.JmxReporter;
+import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.core.JsonFactory;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
@@ -88,9 +90,13 @@ public class JobServicesApp {
                 this.registryClientPool
         );
 
+        MetricRegistry metrics = this.setupMetrics();
+
         this.jobRegistryAPI = new PoomjobsJobRegistryAPI(
                 this.jobRepository,
-                new RunnerInvokerListener(runnerRegistryClient)
+                new CoumpoundListener()
+                        .with(new RunnerInvokerListener(runnerRegistryClient))
+                        .with(new MetricListener(metrics))
         );
 
         PoomjobsJobRegistryAPIHandlersClient jobRegistryClient = new PoomjobsJobRegistryAPIHandlersClient(this.jobRegistryAPI.handlers(), this.registryClientPool);
@@ -111,6 +117,13 @@ public class JobServicesApp {
                         .addPrefixPath("/ui", new UIHandler(jobRegistryClient))
                 )
                 .build();
+    }
+
+    private MetricRegistry setupMetrics() {
+        MetricRegistry metrics = new MetricRegistry();
+        final JmxReporter reporter = JmxReporter.forRegistry(metrics).build();
+        reporter.start();
+        return metrics;
     }
 
     public void run() throws RuntimeException {
