@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-RUNNER_NAME="forrest-gump"
-
 RUNNER_COUNT=1
 REGISTRY_URL=http://localhost:9876
 HOST=localhost
