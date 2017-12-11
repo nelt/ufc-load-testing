@@ -16,8 +16,21 @@
             <filtered>true</filtered>
         </fileSet>
         <fileSet>
+            <directory>${project.basedir}/src/main/scripts</directory>
+            <includes>
+                <include>*.bat</include>
+            </includes>
+            <outputDirectory>/</outputDirectory>
+            <filtered>true</filtered>
+        </fileSet>
+        <fileSet>
             <directory>${project.basedir}/src/main/includes</directory>
             <outputDirectory>/</outputDirectory>
+            <filtered>true</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/src/main/logs</directory>
+            <outputDirectory>/logs</outputDirectory>
             <filtered>true</filtered>
         </fileSet>
     </fileSets>
