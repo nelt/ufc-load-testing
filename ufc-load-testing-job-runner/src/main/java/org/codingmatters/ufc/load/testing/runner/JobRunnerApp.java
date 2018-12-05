@@ -10,6 +10,8 @@ import org.codingmatters.poom.runner.GenericRunner;
 import org.codingmatters.poom.runner.configuration.RunnerConfiguration;
 import org.codingmatters.poom.runner.exception.RunnerInitializationException;
 import org.codingmatters.rest.api.client.RequesterFactory;
+import org.codingmatters.rest.api.client.okhttp.HttpClientWrapper;
+import org.codingmatters.rest.api.client.okhttp.OkHttpClientWrapper;
 import org.codingmatters.rest.api.client.okhttp.OkHttpRequesterFactory;
 import org.codingmatters.ufc.utils.Arguments;
 import org.slf4j.Logger;
@@ -42,26 +44,27 @@ public class JobRunnerApp {
     private final ExecutorService jobWorker;
     private final JsonFactory jsonFactory = new JsonFactory();
     private final RequesterFactory requesterFactory;
-    private final OkHttpClient client;
+    private final HttpClientWrapper client;
 
     private JobRunnerApp(String [] args) {
         Arguments arguments = Arguments.parse(args);
         log.info("runner started with arguments : {}", arguments);
 
         this.checkArguments(arguments);
+        String registry = arguments.option("registry");
 
-        this.client = new OkHttpClient.Builder().build();
-        this.requesterFactory = new OkHttpRequesterFactory(this.client);
+        this.client = OkHttpClientWrapper.build();
+        this.requesterFactory = new OkHttpRequesterFactory(this.client, () -> registry);
 
         this.jobRegistryApi = new PoomjobsJobRegistryAPIRequesterClient(
                 this.requesterFactory,
                 this.jsonFactory,
-                arguments.option("registry")
+                registry
         );
         this.runnerRegistryApi = new PoomjobsRunnerRegistryAPIRequesterClient(
                 this.requesterFactory,
                 this.jsonFactory,
-                arguments.option("registry")
+                registry
         );
 
         int runnerCount = 1;
@@ -87,7 +90,7 @@ public class JobRunnerApp {
             log.info("creating runner configuration for port {}", port);
             this.runners.add(new GenericRunner(
                     RunnerConfiguration.builder()
-                            .jobRegistryUrl(arguments.option("registry"))
+                            .jobRegistryUrl(registry)
                             .endpointHost(arguments.option("host"))
                             .endpointPort(port)
 

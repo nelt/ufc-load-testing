@@ -6,6 +6,8 @@ import org.codingmatters.poom.client.PoomjobsJobRegistryAPIClient;
 import org.codingmatters.poom.client.PoomjobsJobRegistryAPIRequesterClient;
 import org.codingmatters.poom.client.PoomjobsRunnerRegistryAPIClient;
 import org.codingmatters.poom.client.PoomjobsRunnerRegistryAPIRequesterClient;
+import org.codingmatters.rest.api.client.okhttp.HttpClientWrapper;
+import org.codingmatters.rest.api.client.okhttp.OkHttpClientWrapper;
 import org.codingmatters.rest.api.client.okhttp.OkHttpRequesterFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -24,7 +26,7 @@ public class JobServicesAppTest {
 
     private int port;
     private ExecutorService executor;
-    private OkHttpClient client;
+    private HttpClientWrapper client;
 
     @Before
     public void setUp() throws Exception {
@@ -32,7 +34,7 @@ public class JobServicesAppTest {
             this.port = socket.getLocalPort();
         }
         this.executor = Executors.newFixedThreadPool(1);
-        this.client = new OkHttpClient.Builder().build();
+        this.client = OkHttpClientWrapper.build();
     }
 
     @After
@@ -53,13 +55,13 @@ public class JobServicesAppTest {
         }).run());
 
         PoomjobsJobRegistryAPIClient jobRegistry = new PoomjobsJobRegistryAPIRequesterClient(
-                new OkHttpRequesterFactory(this.client),
+                new OkHttpRequesterFactory(this.client, () -> "http://localhost:" + this.port),
                 new JsonFactory(),
                 "http://localhost:" + this.port
         );
 
         PoomjobsRunnerRegistryAPIClient runnerRegistry = new PoomjobsRunnerRegistryAPIRequesterClient(
-                new OkHttpRequesterFactory(this.client),
+                new OkHttpRequesterFactory(this.client, () -> "http://localhost:" + this.port),
                 new JsonFactory(),
                 "http://localhost:" + this.port
         );

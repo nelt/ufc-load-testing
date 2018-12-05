@@ -13,12 +13,15 @@ import org.codingmatters.poom.poomjobs.domain.values.jobs.JobQuery;
 import org.codingmatters.poom.poomjobs.domain.values.jobs.JobValue;
 import org.codingmatters.poom.poomjobs.domain.values.runners.RunnerQuery;
 import org.codingmatters.poom.poomjobs.domain.values.runners.RunnerValue;
+import org.codingmatters.poom.runner.manager.DefaultRunnerClientFactory;
 import org.codingmatters.poom.runner.manager.RunnerInvokerListener;
 import org.codingmatters.poom.services.domain.repositories.Repository;
 import org.codingmatters.poomjobs.service.PoomjobsJobRegistryAPI;
 import org.codingmatters.poomjobs.service.PoomjobsRunnerRegistryAPI;
 import org.codingmatters.poomjobs.service.api.PoomjobsJobRegistryAPIProcessor;
 import org.codingmatters.poomjobs.service.api.PoomjobsRunnerRegistryAPIProcessor;
+import org.codingmatters.rest.api.client.okhttp.HttpClientWrapper;
+import org.codingmatters.rest.api.client.okhttp.OkHttpClientWrapper;
 import org.codingmatters.rest.undertow.CdmHttpUndertowHandler;
 import org.codingmatters.ufc.load.testing.service.ui.UIHandler;
 import org.codingmatters.ufc.utils.Arguments;
@@ -95,7 +98,7 @@ public class JobServicesApp {
         this.jobRegistryAPI = new PoomjobsJobRegistryAPI(
                 this.jobRepository,
                 new CoumpoundListener()
-                        .with(new RunnerInvokerListener(runnerRegistryClient))
+                        .with(new RunnerInvokerListener(runnerRegistryClient, new DefaultRunnerClientFactory(this.factory, OkHttpClientWrapper.build())))
                         .with(new MetricListener(metrics))
         );
 
