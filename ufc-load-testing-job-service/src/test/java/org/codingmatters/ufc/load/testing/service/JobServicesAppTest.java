@@ -2,6 +2,8 @@ package org.codingmatters.ufc.load.testing.service;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.codingmatters.poom.client.PoomjobsJobRegistryAPIClient;
 import org.codingmatters.poom.client.PoomjobsJobRegistryAPIRequesterClient;
 import org.codingmatters.poom.client.PoomjobsRunnerRegistryAPIClient;
@@ -70,5 +72,8 @@ public class JobServicesAppTest {
 
         assertThat(jobRegistry.jobCollection().get(req -> req.range("0-10")).status200(), is(notNullValue()));
         assertThat(runnerRegistry.runnerCollection().get(req -> req.range("0-10")).status200(), is(notNullValue()));
+
+        Response resp = client.execute(new Request.Builder().url("http://localhost:" + this.port + "/metrics").get().build());
+        System.out.println(resp);
     }
 }

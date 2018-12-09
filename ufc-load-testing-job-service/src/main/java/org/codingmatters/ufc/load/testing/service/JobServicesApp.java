@@ -3,6 +3,7 @@ package org.codingmatters.ufc.load.testing.service;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import org.codingmatters.poom.client.PoomjobsJobRegistryAPIHandlersClient;
@@ -20,7 +21,6 @@ import org.codingmatters.poomjobs.service.PoomjobsJobRegistryAPI;
 import org.codingmatters.poomjobs.service.PoomjobsRunnerRegistryAPI;
 import org.codingmatters.poomjobs.service.api.PoomjobsJobRegistryAPIProcessor;
 import org.codingmatters.poomjobs.service.api.PoomjobsRunnerRegistryAPIProcessor;
-import org.codingmatters.rest.api.client.okhttp.HttpClientWrapper;
 import org.codingmatters.rest.api.client.okhttp.OkHttpClientWrapper;
 import org.codingmatters.rest.undertow.CdmHttpUndertowHandler;
 import org.codingmatters.ufc.load.testing.service.ui.UIHandler;
@@ -50,6 +50,7 @@ public class JobServicesApp {
     private final String host;
 
     private final JsonFactory factory = new JsonFactory();
+    private final ObjectMapper mapper =new ObjectMapper(factory);
 
     private final Repository<JobValue, JobQuery> jobRepository = JobRepository.createInMemory();
     private final PoomjobsJobRegistryAPI jobRegistryAPI;
@@ -118,14 +119,17 @@ public class JobServicesApp {
                                 this.runnerRegistryAPI.handlers()
                         )))
                         .addPrefixPath("/ui", new UIHandler(jobRegistryClient))
+                        .addPrefixPath("/metrics", new JobsMetricsHandler(metrics, this.mapper))
                 )
                 .build();
     }
 
     private MetricRegistry setupMetrics() {
         MetricRegistry metrics = new MetricRegistry();
-        final JmxReporter reporter = JmxReporter.forRegistry(metrics).build();
-        reporter.start();
+        if(System.getProperty("expose.jmx.jobs.metrics", "false").equals("true")) {
+            final JmxReporter reporter = JmxReporter.forRegistry(metrics).build();
+            reporter.start();
+        }
         return metrics;
     }
 

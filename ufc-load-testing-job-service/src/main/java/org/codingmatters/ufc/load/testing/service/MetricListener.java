@@ -13,6 +13,44 @@ import static com.codahale.metrics.MetricRegistry.name;
 
 public class MetricListener implements PoomjobsJobRepositoryListener {
 
+    public enum Counter {
+        CREATED("job.created"),
+        UPDATED("job.updated"),
+        DONE("job.done"),
+        PENDING("job.pending"),
+        RUNNING("job.running"),
+        SUCCESS("job.done.success"),
+        FAILURE("job.done.failure"),
+        ;
+
+        private final String key;
+
+        Counter(String key) {
+            this.key = key;
+        }
+
+        public String key() {
+            return key;
+        }
+    }
+    public enum Histogram {
+        WAIT_TIME("job.waited"),
+        EXEC_TIME("job.execution.time"),
+        TOTAL_TIME("job.total.time")
+
+        ;
+
+        private final String key;
+
+        Histogram(String key) {
+            this.key = key;
+        }
+
+        public String key() {
+            return key;
+        }
+    }
+
     private final MetricRegistry metrics;
 
     public MetricListener(MetricRegistry metrics) {
@@ -21,37 +59,43 @@ public class MetricListener implements PoomjobsJobRepositoryListener {
 
     @Override
     public void jobCreated(Entity<JobValue> entity) {
-        this.metrics.counter(metricName("job.creation")).inc();
-        this.metrics.counter(metricName("job", entity.value().opt().arguments().get(0).orElse("unknown"), "creation")).inc();
+        this.metrics.counter(metricName(Counter.CREATED.key())).inc();
+        this.metrics.counter(metricName(Counter.PENDING.key())).inc();
     }
 
     @Override
     public void jobUpdated(Entity<JobValue> entity) {
         OptionalJobValue value = entity.value().opt();
 
-        this.metrics.counter(metricName("job.update")).inc();
+        this.metrics.counter(metricName(Counter.UPDATED.key())).inc();
 
-        if(value.status().run().get().equals(Status.Run.DONE)) {
+        if(value.status().run().get().equals(Status.Run.RUNNING)) {
+            this.metrics.counter(metricName(Counter.PENDING.key())).dec();
+            this.metrics.counter(metricName(Counter.RUNNING.key())).inc();
             long waitTime = Duration.between(value.processing().submitted().get(), value.processing().started().get()).toMillis();
-            this.metrics.histogram(metricName("job.wait.time")).update(waitTime);
+            this.metrics.histogram(metricName(Histogram.WAIT_TIME.key())).update(waitTime);
         }
 
-
         if(value.status().run().get().equals(Status.Run.DONE)) {
-            this.metrics.counter(metricName("job.done")).inc();
+            this.metrics.counter(metricName(Counter.DONE.key())).inc();
+            this.metrics.counter(metricName(Counter.RUNNING.key())).dec();
 
-            String exit = value.status().exit().get().name().toLowerCase();
-            this.metrics.counter(metricName("job.done", exit)).inc();
+            Status.Exit exit = value.status().exit().orElse(Status.Exit.SUCCESS);
+            if(exit.equals(Status.Exit.SUCCESS)) {
+                this.metrics.counter(metricName(Counter.SUCCESS.key())).inc();
+            } else {
+                this.metrics.counter(metricName(Counter.FAILURE.key())).inc();
+            }
 
             long executionTime = Duration.between(value.processing().started().get(), value.processing().finished().get()).toMillis();
-            this.metrics.histogram(metricName("job.execution.time")).update(executionTime);
+            this.metrics.histogram(metricName(Histogram.EXEC_TIME.key())).update(executionTime);
 
-            long totalTime = Duration.between(value.processing().started().get(), value.processing().finished().get()).toMillis();
-            this.metrics.histogram(metricName("job.total.time")).update(totalTime);
+            long totalTime = Duration.between(value.processing().submitted().get(), value.processing().finished().get()).toMillis();
+            this.metrics.histogram(metricName(Histogram.TOTAL_TIME.key())).update(totalTime);
         }
     }
 
-    static private String metricName(String ... localName) {
+    static public String metricName(String ... localName) {
         return name("ufc.load.testing.job.service", localName);
     }
 }
