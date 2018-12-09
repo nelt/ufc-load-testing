@@ -6,7 +6,7 @@
 
     <groupId>org.codingmatters.ufc</groupId>
     <artifactId>ufc-load-testing</artifactId>
-    <version>2017-SNAPSHOT</version>
+    <version>2018</version>
     <packaging>pom</packaging>
 
     <name>UFC Load Testing Workshop Support</name>
