@@ -2,13 +2,13 @@ package org.codingmatters.ufc.load.testing.runner;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import okhttp3.OkHttpClient;
-import org.codingmatters.poom.client.PoomjobsJobRegistryAPIClient;
-import org.codingmatters.poom.client.PoomjobsJobRegistryAPIRequesterClient;
-import org.codingmatters.poom.client.PoomjobsRunnerRegistryAPIClient;
-import org.codingmatters.poom.client.PoomjobsRunnerRegistryAPIRequesterClient;
 import org.codingmatters.poom.runner.GenericRunner;
 import org.codingmatters.poom.runner.configuration.RunnerConfiguration;
 import org.codingmatters.poom.runner.exception.RunnerInitializationException;
+import org.codingmatters.poomjobs.client.PoomjobsJobRegistryAPIClient;
+import org.codingmatters.poomjobs.client.PoomjobsJobRegistryAPIRequesterClient;
+import org.codingmatters.poomjobs.client.PoomjobsRunnerRegistryAPIClient;
+import org.codingmatters.poomjobs.client.PoomjobsRunnerRegistryAPIRequesterClient;
 import org.codingmatters.rest.api.client.RequesterFactory;
 import org.codingmatters.rest.api.client.okhttp.HttpClientWrapper;
 import org.codingmatters.rest.api.client.okhttp.OkHttpClientWrapper;

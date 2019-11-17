@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.codingmatters.ufc</groupId>
         <artifactId>ufc-load-testing</artifactId>
-        <version>2018</version>
+        <version>2019</version>
     </parent>
 
     <artifactId>ufc-load-testing-utils</artifactId>

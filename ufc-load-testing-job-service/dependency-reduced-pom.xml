@@ -6,10 +6,44 @@
     <version>2019</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>ufc-load-testing-job-runner</artifactId>
+  <artifactId>ufc-load-testing-job-service</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.codingmatters.value.objects</groupId>
+        <artifactId>cdm-value-objects-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>page-spec</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <destination-package>org.codingmatters.ufc.load.testing.service.ui.view</destination-package>
+              <input-spec>src/main/resources/page.yaml</input-spec>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>target/generated-sources</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <executions>
@@ -20,13 +54,7 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <transformers>
-            <transformer>
-              <resource>${basedir}/src/main/logback/logback.xml</resource>
-            </transformer>
-          </transformers>
-        </configuration>
+        <configuration />
       </plugin>
     </plugins>
   </build>

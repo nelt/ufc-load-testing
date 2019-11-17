@@ -2,13 +2,13 @@ package org.codingmatters.ufc.load.testing.service.ui;
 
 import io.undertow.Handlers;
 import io.undertow.Undertow;
-import org.codingmatters.poom.client.PoomjobsJobRegistryAPIClient;
-import org.codingmatters.poom.client.PoomjobsJobRegistryAPIHandlersClient;
 import org.codingmatters.poom.poomjobs.domain.jobs.repositories.JobRepository;
 import org.codingmatters.poom.poomjobs.domain.values.jobs.JobQuery;
 import org.codingmatters.poom.poomjobs.domain.values.jobs.JobValue;
 import org.codingmatters.poom.poomjobs.domain.values.jobs.jobvalue.Status;
 import org.codingmatters.poom.services.domain.repositories.Repository;
+import org.codingmatters.poomjobs.client.PoomjobsJobRegistryAPIClient;
+import org.codingmatters.poomjobs.client.PoomjobsJobRegistryAPIHandlersClient;
 import org.codingmatters.poomjobs.service.PoomjobsJobRegistryAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
