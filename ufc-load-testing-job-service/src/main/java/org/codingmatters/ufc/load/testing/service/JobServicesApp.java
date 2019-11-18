@@ -127,7 +127,7 @@ public class JobServicesApp {
                 )
                 .build();
 
-        if(arguments.hasOption("cleanup.rate") && ! arguments.option("cleanup.rate").equals("-1")) {
+        if(arguments.hasOption("cleanup.rate") && ! "0".equals(arguments.option("cleanup.rate"))) {
             this.jobCleanerPool = Executors.newScheduledThreadPool(1);
             long cleanupRate = Long.parseLong(arguments.option("cleanup.rate"));
             long kept = 5000;

@@ -1,16 +1,16 @@
-20:46:54.311 [pool-1-thread-1] INFO  o.c.u.l.t.service.JobServicesApp - [request-id= entity-id= error-token=] - starting with client pool size : 5
-20:46:54.360 [pool-1-thread-1] DEBUG org.jboss.logging - [request-id= entity-id= error-token=] - Logging Provider: org.jboss.logging.Slf4jLoggerProvider
-20:46:54.363 [pool-1-thread-1] DEBUG io.undertow - [request-id= entity-id= error-token=] - starting undertow server io.undertow.Undertow@679c24af
-20:46:54.369 [pool-1-thread-1] INFO  org.xnio - [request-id= entity-id= error-token=] - XNIO version 3.3.8.Final
-20:46:54.378 [pool-1-thread-1] INFO  org.xnio.nio - [request-id= entity-id= error-token=] - XNIO NIO Implementation Version 3.3.8.Final
-20:46:54.423 [XNIO-1 I/O-1] DEBUG org.xnio.nio - [request-id= entity-id= error-token=] - Started channel thread 'XNIO-1 I/O-1', selector sun.nio.ch.EPollSelectorImpl@33c2f56d
-20:46:54.428 [XNIO-1 I/O-2] DEBUG org.xnio.nio - [request-id= entity-id= error-token=] - Started channel thread 'XNIO-1 I/O-2', selector sun.nio.ch.EPollSelectorImpl@43bde5e9
-20:46:54.429 [XNIO-1 I/O-3] DEBUG org.xnio.nio - [request-id= entity-id= error-token=] - Started channel thread 'XNIO-1 I/O-3', selector sun.nio.ch.EPollSelectorImpl@2e03baab
-20:46:54.430 [XNIO-1 Accept] DEBUG org.xnio.nio - [request-id= entity-id= error-token=] - Started channel thread 'XNIO-1 Accept', selector sun.nio.ch.EPollSelectorImpl@aca4a25
-20:46:54.430 [XNIO-1 I/O-4] DEBUG org.xnio.nio - [request-id= entity-id= error-token=] - Started channel thread 'XNIO-1 I/O-4', selector sun.nio.ch.EPollSelectorImpl@e83c5dc
-20:46:54.431 [pool-1-thread-1] DEBUG io.undertow - [request-id= entity-id= error-token=] - Configuring listener with protocol HTTP for interface localhost and port 39887
-20:46:54.458 [pool-1-thread-1] INFO  o.c.u.l.t.service.JobServicesApp - [request-id= entity-id= error-token=] - started job and runner registries at host=localhost ; port=39887
-20:46:55.288 [XNIO-1 task-1] INFO  o.c.p.s.h.JobCollectionGetHandler - [request-id=951f02c6-37d8-42d9-be9b-610acbbd00ef entity-id= error-token=] - returning complete Job list (Job 0-0/0)
-20:46:55.323 [XNIO-1 task-2] INFO  o.c.p.s.h.RunnerCollectionGetHandler - [request-id=d1bb3ba5-4f3b-4880-b286-17dbd3e18710 entity-id= error-token=] - returning complete Runner list (Runner 0-0/0)
-20:46:58.363 [pool-1-thread-1] INFO  o.c.u.l.t.service.JobServicesApp - [request-id= entity-id= error-token=] - job and runner registries are tearing down.
-20:46:58.363 [pool-1-thread-1] DEBUG io.undertow - [request-id= entity-id= error-token=] - stopping undertow server io.undertow.Undertow@679c24af
+22:05:52.402 [pool-1-thread-1] INFO  o.c.u.l.t.service.JobServicesApp - [request-id= entity-id= error-token=] - starting with client pool size : 5
+22:05:52.462 [pool-1-thread-1] DEBUG org.jboss.logging - [request-id= entity-id= error-token=] - Logging Provider: org.jboss.logging.Slf4jLoggerProvider
+22:05:52.464 [pool-1-thread-1] DEBUG io.undertow - [request-id= entity-id= error-token=] - starting undertow server io.undertow.Undertow@33957ed8
+22:05:52.470 [pool-1-thread-1] INFO  org.xnio - [request-id= entity-id= error-token=] - XNIO version 3.3.8.Final
+22:05:52.480 [pool-1-thread-1] INFO  org.xnio.nio - [request-id= entity-id= error-token=] - XNIO NIO Implementation Version 3.3.8.Final
+22:05:52.525 [XNIO-1 I/O-1] DEBUG org.xnio.nio - [request-id= entity-id= error-token=] - Started channel thread 'XNIO-1 I/O-1', selector sun.nio.ch.EPollSelectorImpl@2e03baab
+22:05:52.525 [XNIO-1 I/O-2] DEBUG org.xnio.nio - [request-id= entity-id= error-token=] - Started channel thread 'XNIO-1 I/O-2', selector sun.nio.ch.EPollSelectorImpl@e83c5dc
+22:05:52.530 [XNIO-1 I/O-4] DEBUG org.xnio.nio - [request-id= entity-id= error-token=] - Started channel thread 'XNIO-1 I/O-4', selector sun.nio.ch.EPollSelectorImpl@49cbb0a1
+22:05:52.531 [XNIO-1 I/O-3] DEBUG org.xnio.nio - [request-id= entity-id= error-token=] - Started channel thread 'XNIO-1 I/O-3', selector sun.nio.ch.EPollSelectorImpl@3bdb513d
+22:05:52.531 [XNIO-1 Accept] DEBUG org.xnio.nio - [request-id= entity-id= error-token=] - Started channel thread 'XNIO-1 Accept', selector sun.nio.ch.EPollSelectorImpl@1e96a936
+22:05:52.533 [pool-1-thread-1] DEBUG io.undertow - [request-id= entity-id= error-token=] - Configuring listener with protocol HTTP for interface localhost and port 37437
+22:05:52.561 [pool-1-thread-1] INFO  o.c.u.l.t.service.JobServicesApp - [request-id= entity-id= error-token=] - started job and runner registries at host=localhost ; port=37437
+22:05:53.379 [XNIO-1 task-1] INFO  o.c.p.s.h.JobCollectionGetHandler - [request-id=aeaa7135-6453-4544-aaa8-fdd1b17a9ec5 entity-id= error-token=] - returning complete Job list (Job 0-0/0)
+22:05:53.416 [XNIO-1 task-2] INFO  o.c.p.s.h.RunnerCollectionGetHandler - [request-id=7d3222ee-942d-408e-b40a-0e756913eaaa entity-id= error-token=] - returning complete Runner list (Runner 0-0/0)
+22:05:56.456 [pool-1-thread-1] INFO  o.c.u.l.t.service.JobServicesApp - [request-id= entity-id= error-token=] - job and runner registries are tearing down.
+22:05:56.457 [pool-1-thread-1] DEBUG io.undertow - [request-id= entity-id= error-token=] - stopping undertow server io.undertow.Undertow@33957ed8
