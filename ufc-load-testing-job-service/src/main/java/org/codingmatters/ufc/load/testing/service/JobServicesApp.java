@@ -14,6 +14,7 @@ import org.codingmatters.poom.poomjobs.domain.values.runners.RunnerQuery;
 import org.codingmatters.poom.poomjobs.domain.values.runners.RunnerValue;
 import org.codingmatters.poom.runner.manager.DefaultRunnerClientFactory;
 import org.codingmatters.poom.runner.manager.RunnerInvokerListener;
+import org.codingmatters.poom.services.domain.exceptions.RepositoryException;
 import org.codingmatters.poom.services.domain.repositories.Repository;
 import org.codingmatters.poomjobs.client.PoomjobsJobRegistryAPIHandlersClient;
 import org.codingmatters.poomjobs.client.PoomjobsRunnerRegistryAPIHandlersClient;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -59,6 +61,8 @@ public class JobServicesApp {
     private final PoomjobsRunnerRegistryAPI runnerRegistryAPI;
 
     private final ExecutorService registryClientPool;
+    private final ScheduledExecutorService jobCleanerPool;
+    private final JobCleaner jobCleaner;
 
     private final Undertow server;
 
@@ -122,6 +126,28 @@ public class JobServicesApp {
                         .addPrefixPath("/metrics", new JobsMetricsHandler(metrics, this.mapper))
                 )
                 .build();
+
+        if(arguments.hasOption("cleanup.rate") && ! arguments.option("cleanup.rate").equals("-1")) {
+            this.jobCleanerPool = Executors.newScheduledThreadPool(1);
+            long cleanupRate = Long.parseLong(arguments.option("cleanup.rate"));
+            long kept = 5000;
+            if(arguments.hasOption("cleanup.kept")) {
+                kept = Long.parseLong(arguments.option("cleanup.kept"));
+            }
+            this.jobCleaner = new JobCleaner(this.jobRepository, kept);
+            this.jobCleanerPool.scheduleWithFixedDelay(this::cleanRepository, cleanupRate, cleanupRate, TimeUnit.SECONDS);
+        } else {
+            this.jobCleanerPool = null;
+            this.jobCleaner = null;
+        }
+    }
+
+    private void cleanRepository() {
+        try {
+            this.jobCleaner.clean();
+        } catch (RepositoryException e) {
+            log.error("error cleaning repo", e);
+        }
     }
 
     private MetricRegistry setupMetrics() {
